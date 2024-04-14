@@ -1,11 +1,56 @@
-*<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        :root{
+            color-scheme: light dark;
+        }
+        body{
+            display: flex;
+            justify-content: center;
+        }
+        #chat{
+            display: flex;
+            justify-content: center;
+            border: 1px solid gray;
+            width: 800px;
+            height: 600px;
+            padding: 1em;
+        }
+    </style>
+    <script type="module">
+        import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js'
+
+        const socket = io()
+        const form = document.getElementById('form')
+        const input = document.getElementById('input')
+        const messages = document.getElementById('messages')
+
+        socket.on("chat message", (msg) => {
+        const item = `<li> ${msg} </li>`
+        messages.insertAdjacentHTML("beforeend", item)
+        })
+
+        form.addEventListener('submit', (e) => {    
+          e.preventDefault()
+    
+          if (input.value) {
+            socket.emit('chat message', input.value)
+                input.value = ''
+          }
+        })
+     </script> 
 </head>
 <body>
-    <h1>mi chat</h1>
+    <section id="chat">
+        <form id="form">
+            <ul id="messages"></ul>
+            <input id="input" type="text" autocomplete="off" placeholder="messages">
+            <button type="submit">enviar</button>
+        </form>
+    </section>
 </body>
 </html>
